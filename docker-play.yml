@@ -1,0 +1,31 @@
+---
+- name: update Docker, install Docker, confirm Docker installation, add user to Docker group, check Docker service
+  hosts: all
+  become: true
+
+  tasks: 
+   - name: Update servers
+     apt:
+      update_cache: yes
+
+   - name: Install Docker
+     apt:
+       name: docker.io
+       state: present
+
+   - name: Confirm Docker installation
+     shell: docker --version
+     register: docker_version
+   - debug: msg={{docker_version}}
+
+   - name: Add user to Docker group
+     user:
+      name: ubuntu
+      group: docker
+      append: yes
+
+   - name: Check Docker service
+     service: 
+       name: docker
+       state: started
+
